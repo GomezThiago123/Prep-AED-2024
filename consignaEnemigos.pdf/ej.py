@@ -8,6 +8,7 @@
 ## de daño golpe, menos el nombre los otros valores
 ## deben ser ints
 import random 
+
 def leerEnemigo(a):
     nombre = a.readline().strip()
     
@@ -29,12 +30,18 @@ def cacularAtaque(probabilidad, fuerza, vida):
         print(f"Ataque errado. ")
     return max(vida, 0)
 
+def calcularCuracion(probabilidadCuracion, cantidadCuracion, vida):
+    intento = random.randint(1, 100)
+    if intento <= probabilidadCuracion:
+        print(f"Curación exitosa. Recuperas {cantidadCuracion} puntos de vida.")
+        vida += cantidadCuracion
+    else:
+        print("No pudiste curarte.")
+    return vida
+
+
 a = open("enemigos.txt", "r")
 
-
-##
-
-##
 ##  Vida: 30
 ##  Esqueleto (vida: 10)
 ##
@@ -42,6 +49,12 @@ enemigo = leerEnemigo(a)
 vida = 30
 probabilidad=80
 fuerza=3
+probabilidadPot= 50
+fuerzaPot=7
+
+probabilidadCuracion=75
+cantidadCuracion=7
+
 print(f"vida: {vida}")
 while enemigo != None and vida > 0:
     print(f"\nvida: {vida}")
@@ -49,38 +62,37 @@ while enemigo != None and vida > 0:
     
     ## Turno del jugador: elegir acción
     accion = ""
-    while accion not in ["1", "2"]:
+    while accion not in ["1", "2", "3"]:  # Se agrega la opción 3 para el ataque potenciado
         print("\nTu turno: ")
         print("1. Atacar")
         print("2. Curarse")
-        accion = input("Elige una acción (1/2): ")
+        print("3. Ataque potenciado")  # Opción añadida
+        accion = input("Elige una acción (1/2/3): ")
     
     ## Se ejecuta la habilidad elegida del jugador
     if accion == "1":
         enemigo[1] = cacularAtaque(probabilidad, fuerza, enemigo[1])
-        if enemigo[1] <= 0:
-            print(f"{enemigo[0]} fue derrotado!")
-            
-     # Cargar siguiente enemigo o anunciar victoria
-            enemigo = leerEnemigo(a)
-            if enemigo is not None:
-                print(f"\n¡Se aproxima un {enemigo[0]}!")
-            else:
-                print("\n¡Ganaste! Derrotaste a todos los enemigos.")
-            continue
     elif accion == "2":
-        cura = random.randint(3, 8)
-        vida += cura
-        print(f"Te curaste {cura} puntos de vida. Ahora tienes {vida}.")
+        vida = calcularCuracion(probabilidadCuracion, cantidadCuracion, vida)
+    elif accion == "3":  # Si el jugador elige ataque potenciado
+        enemigo[1] = cacularAtaque(probabilidadPot, fuerzaPot, enemigo[1])  # 50% de probabilidad, 7 de daño
     
-    ## Si el enemigo todavía no fue derrotado, ataca
-    if enemigo != None and enemigo[1] > 0:
-        print(f"\n{enemigo[0]} ataca!")
-        vida = cacularAtaque(enemigo[3], enemigo[2], vida)
-        if vida <= 0:
-            print("Has sido derrotado...")
-            break
-    
-    #enemigo = leerEnemigo(a)
+    if enemigo[1] <= 0:
+        print(f"{enemigo[0]} fue derrotado")
+        
+    # Cargar siguiente enemigo o anunciar victoria
+        enemigo = leerEnemigo(a)
+        if enemigo is not None:
+            print(f"\n Se aproxima un {enemigo[0]}")
+        continue
+
+
+    print(f"\n{enemigo[0]} ataca!")
+    vida = cacularAtaque(enemigo[3], enemigo[2], vida)
+
+if enemigo is None:
+    print("\n¡Ganaste! Derrotaste a todos los enemigos.")
+else:
+    print("\nPerdiste. Has sido derrotado.")
 
 a.close()
