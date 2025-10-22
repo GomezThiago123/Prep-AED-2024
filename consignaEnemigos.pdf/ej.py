@@ -9,6 +9,21 @@
 ## deben ser ints
 import random 
 
+# 1) Leer el archivo de items y guardarlo en una lista de listas, 
+# donde para cada item hay 3 lineas
+# la primera es el nombre del item
+# la segunda es la palabra "Curar" o "Atacar" 
+# la tercera es la cantidad que cura o que me suma a la fuerza
+
+# 2) Agregar una opción extra que es utilizar item
+# Si se elige esa opción me tiene que mostrar los items dispnibles y
+# permitir elegir uno o cancelar
+# Si cancela vuelve al menu de elegir accion
+# Si se elige un item de curar, se me suma esa vida
+# Si se elige un item de atacar, se le suma el valor del item a la fuerza
+# del personaje hasta finalizar el juego
+# El item elegido tiene que ser quitado de la lista de items al usarse
+
 def leerEnemigo(a):
     nombre = a.readline().strip()
     

@@ -1,0 +1,15 @@
+Poción de Curación
+Curar
+10
+Pan
+Curar
+2
+Espada
+Atacar
+1
+Poción de Curación
+Curar
+10
+Espada
+Atacar
+1
