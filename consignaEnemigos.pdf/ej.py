@@ -48,7 +48,7 @@ def usarItem(item, items, vida, fuerza, vidaMax):  # 2)
     elif item[1] == "Atacar":
         print(f"Usaste el item {item[0]}, que aumenta tu fuerza en {item[2]}.")
         fuerza += item[2]
-    items.remove(item)  # Eliminar item usado
+    items.remove(item)  # Elimina el item que usé
     return vida, fuerza
 
 def leerEnemigo(a):
@@ -99,6 +99,7 @@ cantidadCuracion=7
 
 items = leerItems()
 vidaMax = 30
+print(items)
 
 print(f"vida: {vida}")
 while enemigo != None and vida > 0:
@@ -119,7 +120,7 @@ while enemigo != None and vida > 0:
         enemigo[1] = cacularAtaque(probabilidad, fuerza, enemigo[1])
     elif accion == "2":
         vida = calcularCuracion(probabilidadCuracion, cantidadCuracion, vida)
-    elif accion == "3":  # Si el jugador elige ataque potenciado
+    elif accion == "3":
         enemigo[1] = cacularAtaque(probabilidadPot, fuerzaPot, enemigo[1])  # 50% de probabilidad, 7 de daño
     elif accion == "4":  # 2) Usar item
         if not items:
