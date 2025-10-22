@@ -1,3 +1,5 @@
+import random 
+
 ##Thiago Gomez PREP 4to
 
 ## Escribir una funcion que reciba un archivo
@@ -7,7 +9,6 @@
 ## 4 valores: Nombre, vida, daño, probabilidad
 ## de daño golpe, menos el nombre los otros valores
 ## deben ser ints
-import random 
 
 # 1) Leer el archivo de items y guardarlo en una lista de listas, 
 # donde para cada item hay 3 lineas
@@ -23,6 +24,32 @@ import random
 # Si se elige un item de atacar, se le suma el valor del item a la fuerza
 # del personaje hasta finalizar el juego
 # El item elegido tiene que ser quitado de la lista de items al usarse
+def leerItems():
+    items = []
+    try:
+        with open("items.txt", "r") as f:
+            while True:
+                nombre = f.readline().strip()
+                if not nombre:
+                    break
+                tipo = f.readline().strip()
+                cantidad = int(f.readline().strip())
+                items.append([nombre, tipo, cantidad])
+    except FileNotFoundError:
+        print("No se encontró el archivo items.txt. No tendrás items.")
+        return items
+    
+def usarItem(item, items, vida, fuerza, vidaMax):  # 2)
+    if item[1] == "Curar":
+        print(f"Usaste el item {item[0]}, que cura {item[2]} puntos.")
+        vida += item[2]
+        if vida > vidaMax:
+            vida = vidaMax
+    elif item[1] == "Atacar":
+        print(f"Usaste el item {item[0]}, que aumenta tu fuerza en {item[2]}.")
+        fuerza += item[2]
+    items.remove(item)  # Eliminar item usado
+    return vida, fuerza
 
 def leerEnemigo(a):
     nombre = a.readline().strip()
@@ -70,20 +97,23 @@ fuerzaPot=7
 probabilidadCuracion=75
 cantidadCuracion=7
 
+items = leerItems()
+vidaMax = 30
+
 print(f"vida: {vida}")
 while enemigo != None and vida > 0:
     print(f"\nvida: {vida}")
     print(f"Enemigo: {enemigo[0]}, vida: {enemigo[1]}")
     
-    ## Turno del jugador: elegir acción
     accion = ""
-    while accion not in ["1", "2", "3"]:  # Se agrega la opción 3 para el ataque potenciado
+    while accion not in ["1", "2", "3", "4"]:  # 2) Se agrega opción 4 para usar item
         print("\nTu turno: ")
         print("1. Atacar")
         print("2. Curarse")
-        print("3. Ataque potenciado")  # Opción añadida
-        accion = input("Elige una acción (1/2/3): ")
-    
+        print("3. Ataque potenciado")
+        print("4. Usar item")
+        accion = input("Elige una acción (1/2/3/4): ")
+
     ## Se ejecuta la habilidad elegida del jugador
     if accion == "1":
         enemigo[1] = cacularAtaque(probabilidad, fuerza, enemigo[1])
@@ -91,10 +121,28 @@ while enemigo != None and vida > 0:
         vida = calcularCuracion(probabilidadCuracion, cantidadCuracion, vida)
     elif accion == "3":  # Si el jugador elige ataque potenciado
         enemigo[1] = cacularAtaque(probabilidadPot, fuerzaPot, enemigo[1])  # 50% de probabilidad, 7 de daño
-    
+    elif accion == "4":  # 2) Usar item
+        if not items:
+            print("No tienes items disponibles.")
+        else:
+            print("\nItems disponibles:")
+            for i, item in enumerate(items, start=1):
+                print(f"{i}. {item[0]} ({item[1]}) - {item[2]}")
+            item_elegido = input("Elige un item para usar (o presiona Enter para cancelar): ")
+            if item_elegido:
+                try:
+                    item_index = int(item_elegido) - 1
+                    if 0 <= item_index < len(items):
+                        # 2) Usar el item elegido
+                        vida, fuerza = usarItem(items[item_index], items, vida, fuerza, vidaMax)  # 2)
+                    else:
+                        print("Selección inválida.")
+                except ValueError:
+                    print("Entrada inválida. Cancelando selección de item.")
+
     if enemigo[1] <= 0:
         print(f"{enemigo[0]} fue derrotado")
-        
+
     # Cargar siguiente enemigo o anunciar victoria
         enemigo = leerEnemigo(a)
         if enemigo is not None:
