@@ -37,7 +37,7 @@ def leerItems():
                 items.append([nombre, tipo, cantidad])
     except FileNotFoundError:
         print("No se encontró el archivo items.txt. No tendrás items.")
-        return items
+    return items
     
 def usarItem(item, items, vida, fuerza, vidaMax):  # 2)
     if item[1] == "Curar":
@@ -45,6 +45,9 @@ def usarItem(item, items, vida, fuerza, vidaMax):  # 2)
         vida += item[2]
         if vida > vidaMax:
             vida = vidaMax
+            print(f"Como superaste el  limite de vida, quedaste con {vida}")
+        else:
+            print(f"Quedaste con {vida}")
     elif item[1] == "Atacar":
         print(f"Usaste el item {item[0]}, que aumenta tu fuerza en {item[2]}.")
         fuerza += item[2]
@@ -77,6 +80,11 @@ def calcularCuracion(probabilidadCuracion, cantidadCuracion, vida):
     if intento <= probabilidadCuracion:
         print(f"Curación exitosa. Recuperas {cantidadCuracion} puntos de vida.")
         vida += cantidadCuracion
+        if vida > vidaMax:
+            vida = vidaMax
+            print(f"Como superaste el  limite de vida, quedaste con {vida}")
+        else:
+            print(f"Quedaste con {vida}")
     else:
         print("No pudiste curarte.")
     return vida
@@ -101,7 +109,7 @@ items = leerItems()
 vidaMax = 30
 print(items)
 
-print(f"vida: {vida}")
+#print(f"vida: {vida}")
 while enemigo != None and vida > 0:
     print(f"\nvida: {vida}")
     print(f"Enemigo: {enemigo[0]}, vida: {enemigo[1]}")
